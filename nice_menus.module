@@ -31,7 +31,7 @@ function nice_menus_help($path, $arg) {
 function nice_menus_requirements($phase) {
   $requirements = array();
   $jquery = drupal_get_library('system', 'jquery');
-  if (version_compare($jquery['version'], '1.7', '<')) {
+  if (version_compare($jquery['version'], '1.8', '<')) {
     $requirements['nice_menus'] = array(
       'title' => t('Nice menus'),
       'value' => 'jQuery >=1.8',
