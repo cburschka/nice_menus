@@ -34,7 +34,7 @@ function nice_menus_requirements($phase) {
   if (version_compare($jquery['version'], '1.7', '<')) {
     $requirements['nice_menus'] = array(
       'title' => t('Nice menus'),
-      'value' => 'jQuery > 1.7.1',
+      'value' => 'jQuery >=1.8',
       'severity' => REQUIREMENT_ERROR,
     );
   }
@@ -98,7 +98,7 @@ function nice_menus_menu() {
  */
 function nice_menus_library() {
   $module_path = drupal_get_path('module', 'nice_menus');
-  // Jquery bgiframe, jquery >=1.2.6 .
+  // Jquery bgiframe, jquery >=1.2.6.
   $libraries['jquery.bgiframe'] = array(
     'title' => 'bgiframe',
     'website' => 'http://plugins.jquery.com/bgiframe',
@@ -118,11 +118,11 @@ function nice_menus_library() {
     ),
   );
 
-  // Superfish.
+  // Superfish, jquery jquery >=1.8.
   $libraries['superfish'] = array(
     'title' => 'Superfish',
     'website' => 'http://plugins.jquery.com/superfish/',
-    'version' => '1.7.2',
+    'version' => '1.7.4',
     'js' => array(
       $module_path . '/js/superfish.js' => array(),
     ),
