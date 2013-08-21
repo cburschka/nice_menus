@@ -98,10 +98,10 @@ function nice_menus_menu() {
  */
 function nice_menus_library() {
   $module_path = drupal_get_path('module', 'nice_menus');
-  // Jquery bgiframe.
+  // Jquery bgiframe, jquery >=1.2.6 .
   $libraries['jquery.bgiframe'] = array(
     'title' => 'bgiframe',
-    'website' => 'http://docs.jquery.com/Plugins/bgiframe',
+    'website' => 'http://plugins.jquery.com/bgiframe',
     'version' => '3.0.0',
     'js' => array(
       $module_path . '/js/jquery.bgiframe.js' => array(),
@@ -111,7 +111,7 @@ function nice_menus_library() {
   // Jquery hoverIntent.
   $libraries['jquery.hoverIntent'] = array(
     'title' => 'hoverIntent',
-    'website' => 'http://cherne.net/brian/resources/jquery.hoverIntent.html',
+    'website' => 'https://github.com/briancherne/jquery-hoverIntent',
     'version' => 'r7',
     'js' => array(
       $module_path . '/js/jquery.hoverIntent.js' => array(),
@@ -121,7 +121,7 @@ function nice_menus_library() {
   // Superfish.
   $libraries['superfish'] = array(
     'title' => 'Superfish',
-    'website' => 'http://users.tpg.com.au/j_birch/plugins/superfish/',
+    'website' => 'http://plugins.jquery.com/superfish/',
     'version' => '1.7.2',
     'js' => array(
       $module_path . '/js/superfish.js' => array(),
