@@ -1,0 +1,9 @@
+name: 'Nice Menus'
+description: 'CSS/jQuery drop-down, drop-right and drop-left menus to be placed in blocks.'
+package: 'Translation Management'
+core: 8.x
+type: module
+configure: admin/config/user-interface/nice_menus
+
+dependencies:
+- menu
