@@ -305,7 +305,7 @@ function theme_nice_menus_tree($variables) {
   if ($menu) {
     // Set the total menu depth counting from this parent if we need it.
     $depth = ($depth > 0) ? ($parent_depth + $depth) : $depth;
-    $output = theme('nice_menus_build', array(
+    $output = _theme('nice_menus_build', array(
       'menu' => $menu,
       'depth' => $depth,
       'trail' => $trail,
@@ -415,7 +415,7 @@ function theme_nice_menus_build($variables) {
           }
         }
 
-        $output .= theme('menu_link', $variables);
+        $output .= _theme('menu_link', $variables);
       }
       else {
         $element = array(
@@ -446,7 +446,7 @@ function theme_nice_menus_build($variables) {
           }
         }
 
-        $output .= theme('menu_link', $variables);
+        $output .= _theme('menu_link', $variables);
       }
     }
   }
@@ -482,7 +482,7 @@ function theme_nice_menus($variables) {
   // "Show as expanded" option.
   $respect_expanded = $variables['respect_expanded'];
   $output = '';
-  if ($menu_tree = theme('nice_menus_tree', array(
+  if ($menu_tree = _theme('nice_menus_tree', array(
     'menu_name' => $menu_name,
     'mlid' => $mlid,
     'depth' => $depth,
@@ -509,7 +509,7 @@ function theme_nice_menus_main_menu($variables) {
   // and use 0 to display no children.
   $depth = $variables['depth'];
   $menu_name = variable_get('menu_main_links_source', 'main-menu');
-  $output = theme('nice_menus', array(
+  $output = _theme('nice_menus', array(
     'id' => 0,
     'menu_name' => $menu_name,
     'mlid' => 0,
@@ -533,7 +533,7 @@ function theme_nice_menus_secondary_menu($variables) {
   // and use 0 to display no children.
   $depth = $variables['depth'];
   $menu_name = variable_get('menu_secondary_links_source', 'user-menu');
-  $output = theme('nice_menus', array(
+  $output = _theme('nice_menus', array(
     'id' => 0,
     'menu_name' => $menu_name,
     'mlid' => 0,
