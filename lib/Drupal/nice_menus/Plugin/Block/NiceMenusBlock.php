@@ -30,28 +30,28 @@ class NiceMenusBlock extends BlockBase {
     $form['nice_menus_name'] = array(
       '#type' => 'textfield',
       '#title' => t('Menu name'),
-      '#default_value' => $configuration['nice_menus_name'],
+      '#default_value' => isset($configuration['nice_menus_name']) ? $configuration['nice_menus_name'] : '',
     );
     $form['nice_menus_menu'] = array(
       '#type' => 'select',
       '#title' => t('Menu parent'),
       '#description' => t('The menu parent from which to show a Nice menu.'),
       '#default_value' => isset($configuration['nice_menus_menu']) ? $configuration['nice_menus_menu'] : 'navigation:0',
-      '#options' => menu_parent_options(menu_get_menus(), 0),
+      '#options' => menu_parent_options(menu_get_menus()),
     );
     $form['nice_menus_depth'] = array(
       '#type' => 'select',
       '#title' => t('Menu depth'),
       '#description' => t('The depth of the menu, i.e. the number of child levels starting with the parent selected above. Leave set to -1 to display all children and use 0 to display no children.'),
       '#default_value' => isset($configuration['nice_menus_depth']) ? $configuration['nice_menus_depth'] : -1,
-      '#options' => drupal_map_assoc(range(-1, 5)),
+      '#options' => array_combine(range(-1, 5), range(-1, 5)),
     );
     $form['nice_menus_type'] = array(
       '#type' => 'select',
       '#title' => t('Menu style'),
       '#description' => t('right: menu items are listed on top of each other and expand to the right') . '<br />' . t('left: menu items are listed on top of each other and expand to the left') . '<br />' . t('down: menu items are listed side by side and expand down'),
       '#default_value' => isset($configuration['nice_menus_type']) ? $configuration['nice_menus_type'] : 'right',
-      '#options' => drupal_map_assoc(array('right', 'left', 'down')),
+      '#options' => array_combine(array('right', 'left', 'down'), array('right', 'left', 'down')),
     );
     $form['nice_menus_respect_expand'] = array(
       '#type' => 'select',
