@@ -37,7 +37,8 @@ function nice_menus_form_alter(&$form, $form_state, $form_id) {
       if (arg(4) && arg(4) != 'global') {
         return;
       }
-
+      $config = Drupal::config('nice_menus.settings');
+//      var_dump($config);
       // Have to add a custom submit handler since this form doesn't use
       // the standard system submit handler.
       $form['#submit'][] = 'nice_menus_system_theme_settings_submit';
@@ -47,7 +48,7 @@ function nice_menus_form_alter(&$form, $form_state, $form_id) {
         '#type' => 'textfield',
         '#title' => t('Path to custom Nice menus CSS file'),
         '#description' => t('To override the default Nice menus CSS layout, enter the path to your custom CSS file.  It should be a relative path from the root of your Drupal install (e.g. sites/all/themes/example/mymenu.css).'),
-        '#default_value' => variable_get('nice_menus_custom_css', ''),
+        '#default_value' => $config->get('nice_menus_custom_css'),
         // Field appears below submit buttons without this -- yucky.
         '#weight' => 0,
       );
@@ -59,7 +60,10 @@ function nice_menus_form_alter(&$form, $form_state, $form_id) {
  * Records the Nice menu custom CSS file per theme.
  */
 function nice_menus_system_theme_settings_submit($form, &$form_state) {
-  variable_set('nice_menus_custom_css', $form_state['values']['nice_menus_custom_css']);
+//  var_dump($form_state['values']);
+//  exit();
+   $config = Drupal::config('nice_menus.settings');
+    $config->set('nice_menus_custom_css', "testccc");
 }
 
 /**
@@ -76,73 +80,6 @@ function nice_menus_menu() {
 }
 
 /**
- * Implements hook_library_info().
- */
-function nice_menus_library_info() {
-  $module_path = drupal_get_path('module', 'nice_menus');
-  // Jquery bgiframe, jquery >=1.2.6.
-  $libraries['jquery.bgiframe'] = array(
-    'title' => 'bgiframe',
-    'website' => 'http://plugins.jquery.com/bgiframe',
-    'version' => '3.0.0',
-    'js' => array(
-      $module_path . '/js/jquery.bgiframe.js' => array(),
-    ),
-  );
-
-  // Jquery hoverIntent.
-  $libraries['jquery.hoverIntent'] = array(
-    'title' => 'hoverIntent',
-    'website' => 'https://github.com/briancherne/jquery-hoverIntent',
-    'version' => 'r7',
-    'js' => array(
-      $module_path . '/js/jquery.hoverIntent.js' => array(),
-    ),
-  );
-
-  // Superfish, jquery jquery >=1.8.
-  $libraries['superfish'] = array(
-    'title' => 'Superfish',
-    'website' => 'http://plugins.jquery.com/superfish/',
-    'version' => '1.7.4',
-    'js' => array(
-      $module_path . '/js/superfish.js' => array(),
-    ),
-    'dependencies' => array(
-      array('nice_menus', 'jquery.bgiframe'),
-      array('nice_menus', 'jquery.hoverIntent'),
-    ),
-  );
-
-  // Nicemenus.
-  $libraries['nice_menus'] = array(
-    'title' => 'Nice Menus',
-    'website' => 'http://drupal.org/project/nice_menus',
-    'version' => '1.0',
-    'js' => array(
-      // Add the Superfish options variables.
-      $module_path . '/js/nice_menus.js' => array(),
-    ),
-    'dependencies' => array(
-      array('nice_menus', 'superfish'),
-    ),
-  );
-  $config = \Drupal::config('nice_menus.settings');
-  // Add the javascript according to configuration settings.
-  $libraries['nice_menus']['js'][] = array(
-    'type' => 'setting',
-    'data' => array(
-      'nice_menus_options' => array(
-        'delay' => $config->get('nice_menus_sf_delay'),
-        'speed' => $config->get('nice_menus_sf_speed')
-      ),
-    ),
-  );
-
-  return $libraries;
-}
-
-/**
  * add nice_menus js library.
  */
 function _load_nice_menus_library() {
@@ -150,19 +87,22 @@ function _load_nice_menus_library() {
   if ($is_load === FALSE) {
     $config = Drupal::config('nice_menus.settings');
     // Add Superfish JavaScript, if enabled.
-    if ($config->get('nice_menus_js')) {
-      drupal_add_library('nice_menus', 'nice_menus');
-    }
+//    if ($config->get('nice_menus_js')) {
+        _drupal_add_library('nice_menus/nice_menus');
+        _drupal_add_library('nice_menus/superfish');
+        _drupal_add_library('nice_menus/jquery.hoverIntent');
+        _drupal_add_library('nice_menus/jquery.bgiframe');
+//    }
     // Add main CSS functionality.
-    drupal_add_css(drupal_get_path('module', 'nice_menus') . '/css/nice_menus.css', array('group' => CSS_AGGREGATE_DEFAULT, 'basename' => 'nice_menus.css'));
+    _drupal_add_css(drupal_get_path('module', 'nice_menus') . '/libraries/css/nice_menus.css', array('group' => CSS_AGGREGATE_DEFAULT, 'basename' => 'nice_menus.css'));
     // Add custom CSS layout if specified.
-    if ($custom = variable_get('nice_menus_custom_css', '')) {
-      drupal_add_css($custom, array('group' => CSS_AGGREGATE_DEFAULT, 'basename' => '/css/nice_menus_custom.css'));
-    }
+//    if ($custom = variable_get('nice_menus_custom_css', '')) {
+//      _drupal_add_css($custom, array('group' => CSS_AGGREGATE_DEFAULT, 'basename' => '/css/nice_menus_custom.css'));
+//    }
     // Fall back to default layout.
-    else {
-      drupal_add_css(drupal_get_path('module', 'nice_menus') . '/css/nice_menus_default.css', array('group' => CSS_AGGREGATE_DEFAULT, 'basename' => '/css/nice_menus_default.css'));
-    }
+//    else {
+      _drupal_add_css(drupal_get_path('module', 'nice_menus') . '/libraries/css/nice_menus_default.css', array('group' => CSS_AGGREGATE_DEFAULT, 'basename' => '/css/nice_menus_default.css'));
+//    }
     $is_load = TRUE;
   }
 }
@@ -220,8 +160,8 @@ function nice_menus_theme() {
 function nice_menus_build_page_trail($page_menu) {
   $trail = array();
   foreach ($page_menu as $item) {
-    if ($item['link']['in_active_trail']) {
-      $trail[] = $item['link']['mlid'];
+    if ($item['link']->in_active_trail) {
+      $trail[] = $item['link']->mlid;
     }
     if ($item['below']) {
       $trail = array_merge($trail, nice_menus_build_page_trail($item['below']));
@@ -260,16 +200,18 @@ function theme_nice_menus_tree($variables) {
   $depth = $variables['depth'];
 
   $direction = isset($variables['direction']) ? $variables['direction'] : 'left';
+  $menu = $variables['menu'];
+
   /*
    * Optional. A custom menu array to use for theming -- it should have.
-   * the same structure as that returned by menu_tree_all_data().
+   * the same structure as that returned by MenuTree::buildAllData().
    */
-  $menu = $variables['menu'];
+  $menu_tree = \Drupal::service('menu_link.tree');
   $respect_expanded = $variables['respect_expanded'];
   // Load the full menu array.
-  $menu = isset($menu) ? $menu : menu_tree_all_data($menu_name);
+  $menu = isset($menu) ? $menu : $menu_tree->buildAllData($menu_name);
   if (isset($menu)) {
-    $page_menu = menu_tree_page_data($menu_name);
+    $page_menu = $menu_tree->buildPageData($menu_name);
     $trail = nice_menus_build_page_trail($page_menu);
     unset($page_menu);
   }
@@ -289,14 +231,14 @@ function theme_nice_menus_tree($variables) {
     // Load the parent menu item.
     $item = menu_link_load($mlid);
     // The depth for our parent item, if it exists.
-    $parent_depth = ($item['depth']) ? $item['depth'] : 0;
-
+    $parent_depth = ($item->depth) ? $item->depth : 0;
+//    var_dump($menu);
     // Narrow down the full menu to the specific sub-tree we need.
     for ($p = 1; $p < 10; $p++) {
-      if ($sub_mlid = $item["p$p"]) {
+      if ($sub_mlid = $item->{"p$p"}) {
         $subitem = menu_link_load($sub_mlid);
         // Menu sets these ghetto-ass keys in _menu_tree_check_access().
-        $menu = $menu[(50000 + $subitem['weight']) . ' ' . $subitem['title'] . ' ' . $subitem['mlid']]['below'];
+        $menu = $menu[(50000 + $subitem->weight) . ' ' . $subitem->link_title . ' ' . $subitem->mlid]['below'];
       }
     }
   }

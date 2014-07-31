@@ -6,4 +6,4 @@ type: module
 configure: admin/config/user-interface/nice_menus
 
 dependencies:
-- menu
+- menu_link
