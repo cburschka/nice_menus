@@ -7,7 +7,7 @@
 
 namespace Drupal\nice_menus\Plugin\Block;
 
-use Drupal\block\BlockBase;
+use Drupal\Core\Block\BlockBase;
 use Drupal\Component\Annotation\Plugin;
 use Drupal\Core\Annotation\Translation;
 
@@ -22,10 +22,10 @@ use Drupal\Core\Annotation\Translation;
 class NiceMenusBlock extends BlockBase {
 
   /**
-   * Overrides \Drupal\block\BlockBase::blockForm().
+   * {@inheritdoc}
    */
-  public function blockForm($form, &$form_state) {
-
+  public function blockForm($form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    $form = parent::blockForm($form, $form_state);
     $configuration = $this->configuration;
     $form['nice_menus_name'] = array(
       '#type' => 'textfield',
@@ -37,7 +37,7 @@ class NiceMenusBlock extends BlockBase {
       '#title' => t('Menu parent'),
       '#description' => t('The menu parent from which to show a Nice menu.'),
       '#default_value' => isset($configuration['nice_menus_menu']) ? $configuration['nice_menus_menu'] : 'navigation:0',
-      '#options' => menu_ui_parent_options(menu_ui_get_menus()),
+      '#options' => \Drupal::service('menu.parent_form_selector')->getParentSelectOptions(menu_ui_get_menus()),
     );
     $form['nice_menus_depth'] = array(
       '#type' => 'select',
@@ -70,12 +70,12 @@ class NiceMenusBlock extends BlockBase {
   /**
    * Overrides \Drupal\block\BlockBase::blockSubmit().
    */
-  public function blockSubmit($form, &$form_state) {
-    $this->setConfigurationValue('nice_menus_name', $form_state['values']['nice_menus_name']);
-    $this->setConfigurationValue('nice_menus_menu', $form_state['values']['nice_menus_menu']);
-    $this->setConfigurationValue('nice_menus_depth', $form_state['values']['nice_menus_depth']);
-    $this->setConfigurationValue('nice_menus_type', $form_state['values']['nice_menus_type']);
-    $this->setConfigurationValue('nice_menus_respect_expand', $form_state['values']['nice_menus_respect_expand']);
+  public function blockSubmit($form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    $this->setConfigurationValue('nice_menus_name', $form_state->getValue('nice_menus_name'));
+    $this->setConfigurationValue('nice_menus_menu', $form_state->getValue('nice_menus_menu'));
+    $this->setConfigurationValue('nice_menus_depth', $form_state->getValue('nice_menus_depth'));
+    $this->setConfigurationValue('nice_menus_type', $form_state->getValue('nice_menus_type'));
+    $this->setConfigurationValue('nice_menus_respect_expand', $form_state->getValue('nice_menus_respect_expand'));
   }
 
   /**
@@ -94,5 +94,4 @@ class NiceMenusBlock extends BlockBase {
     );
     return $build;
   }
-
 }
