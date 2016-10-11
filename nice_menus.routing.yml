@@ -1,5 +1,5 @@
 nice_menus.form:
-  pattern: 'admin/config/user-interface/nice_menus'
+  path: 'admin/config/user-interface/nice_menus'
   defaults:
     _form: '\Drupal\nice_menus\Form\NiceMenusSettingsForm'
   requirements:
