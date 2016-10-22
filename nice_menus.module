@@ -9,7 +9,6 @@
  */
 
 use Drupal\Core\Menu\MenuTreeParameters;
-use Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_help().
@@ -26,57 +25,6 @@ function nice_menus_help($path, $arg) {
       break;
   }
   return $output;
-}
-
-/**
- * Implements hook_form_alter().
- */
-function nice_menus_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  switch ($form_id) {
-    case 'system_theme_settings':
-      if(\Drupal::service('path.current')->getPath() === '/admin/appearance/settings') {
-        // This is a global setting, so only insert the field
-        // on the global settings page.
-        $config = Drupal::config('nice_menus.settings');
-        // Have to add a custom submit handler since this form doesn't use
-        // the standard system submit handler.
-        $form['#submit'][] = 'nice_menus_system_theme_settings_submit';
-
-        // Add global theme setting for a custom CSS file.
-        $form['nice_menus_custom_css'] = array(
-          '#type'          => 'textfield',
-          '#title'         => t('Path to custom Nice menus CSS file'),
-          '#description'   => t('To override the default Nice menus CSS layout, enter the path to your custom CSS file.  It should be a relative path from the root of your Drupal install (e.g. sites/all/themes/example/mymenu.css).'),
-          '#default_value' => $config->get('nice_menus_custom_css'),
-          // Field appears below submit buttons without this -- yucky.
-          '#weight'        => 0,
-        );
-        break;
-      }
-  }
-}
-
-/**
- * Records the Nice menu custom CSS file per theme.
- */
-function nice_menus_system_theme_settings_submit($form, FormStateInterface $form_state) {
-  \Drupal::configFactory()
-    ->getEditable('nice_menus.settings')
-    ->set('nice_menus_custom_css', $form_state->getValue('nice_menus_custom_css'))
-    ->save();
-}
-
-/**
- * Implements hook_menu().
- */
-function nice_menus_menu() {
-  $items['admin/config/user-interface/nice_menus'] = array(
-    'title'       => 'Nice menus',
-    'description' => 'Configure Nice menus.',
-    'route_name'  => 'nice_menus.form',
-  );
-
-  return $items;
 }
 
 /**
@@ -100,9 +48,17 @@ function nice_menus_build_tree(array $config) {
   $menu_tree = \Drupal::service('toolbar.menu_tree');
   $parameters = new MenuTreeParameters();
 
-  if($config['menu_mlid']) {
-    $parameters->setRoot($config['menu_mlid'])->excludeRoot()->onlyEnabledLinks();
+  // set menu root.
+  if ($config['menu_mlid']) {
+    $parameters->setRoot($config['menu_mlid']);
   }
+
+  // set menu depth.
+  if ($config['nice_menus_depth'] > 0) {
+    $parameters->setMaxDepth($config['nice_menus_depth']);
+  }
+
+  $parameters->excludeRoot()->onlyEnabledLinks();
 
   $tree = $menu_tree->load($config['menu_name'], $parameters);
   $manipulators = array(

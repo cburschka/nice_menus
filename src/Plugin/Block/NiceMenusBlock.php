@@ -78,8 +78,32 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
     ]);
   }
 
+  public function _build_sub_tree($items) {
+    foreach($items as $k => &$item) {
+
+      /**
+      attributes methods.
+      [1] => offsetGet
+      [2] => offsetSet
+      [3] => offsetUnset
+      [4] => offsetExists
+      [5] => addClass
+      [6] => setAttribute
+      [7] => removeAttribute
+      [8] => removeClass
+      [9] => hasClass
+       */
+      if (!isset($item['below'][0])) {
+        $item['attributes']->addClass('menuparent');
+      } else {
+        $items['below'] = $this->_build_sub_tree($item['below']);
+      }
+    }
+    return $items;
+  }
+
   /**
-   * {@inheritdoc}
+   * @return array
    */
   public function build() {
     $block_config = $this->getConfiguration();
@@ -91,16 +115,27 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
     // attach library.
     $library = [];
     if ($config->get('nice_menus_js')) {
-      $library[] = 'nice_menus/nice_menus';
       $library[] = 'nice_menus/superfish';
       $library[] = 'nice_menus/jquery.hoverIntent';
       $library[] = 'nice_menus/jquery.bgiframe';
+      $library[] = 'nice_menus/nice_menus';
+    }
+
+    // load nice menus default css.
+    if ($config->get('nice_menus_default_css')) {
       $library[] = 'nice_menus/nice_menus_default';
     }
 
     $tree = nice_menus_build_tree($block_config);
 
+    // add default class.
     $tree['#attributes']['class'][] = 'nice-menu';
+    $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['menu_name'];
+    $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['nice_menus_type'];
+
+    // add 'menuparent' class.
+    // TODO: no work.
+    $tree['#items'] = $this->_build_sub_tree($tree['#items']);
 
     return array(
       '#theme' => 'nice_menus',

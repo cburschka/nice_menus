@@ -13,4 +13,4 @@ nice_menus.settings:
     nice_menus_ie:
       type: integer
     nice_menus_custom_css:
-      type: string
+      type: integer

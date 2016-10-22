@@ -45,6 +45,14 @@ class NiceMenusSettingsForm extends ConfigFormBase {
       '#description' => $this->t('This will add Superfish jQuery to Nice menus. This is required for Nice menus to work properly in Internet Explorer.'),
       '#default_value' => $config->get('nice_menus_js'),
     );
+
+    $form['nice_menus_default_css'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Use default css'),
+      '#description' => $this->t('This will add default nice menus style.'),
+      '#default_value' => $config->get('nice_menus_default_css'),
+    );
+
     $form['nice_menus_sf_options'] = array(
       '#type' => 'fieldset',
       '#title' => $this->t('Advanced: Superfish options'),
@@ -52,6 +60,7 @@ class NiceMenusSettingsForm extends ConfigFormBase {
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
+
     // Mouse delay textfield for the time before the menus is closed.
     $form['nice_menus_sf_options']['nice_menus_sf_delay'] = array(
       '#type' => 'number',
@@ -60,6 +69,7 @@ class NiceMenusSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('nice_menus_sf_delay'),
       '#size' => 5,
     );
+
     // Display speed of the animation for the menu to open/close.
     $form['nice_menus_sf_options']['nice_menus_sf_speed'] = array(
       '#type' => 'select',
@@ -92,6 +102,7 @@ class NiceMenusSettingsForm extends ConfigFormBase {
         ->set('nice_menus_sf_delay', $form_state->getValue('nice_menus_sf_delay'))
         ->set('nice_menus_js', $form_state->getValue('nice_menus_js'))
         ->set('nice_menus_sf_speed', $form_state->getValue('nice_menus_sf_speed'))
+        ->set('nice_menus_default_css', $form_state->getValue('nice_menus_default_css'))
         ->save();
     parent::submitForm($form, $form_state);
   }
