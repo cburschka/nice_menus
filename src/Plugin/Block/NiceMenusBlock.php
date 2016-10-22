@@ -80,7 +80,6 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
 
   public function _build_sub_tree($items) {
     foreach($items as $k => &$item) {
-
       /**
       attributes methods.
       [1] => offsetGet
@@ -93,10 +92,9 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
       [8] => removeClass
       [9] => hasClass
        */
-      if (!isset($item['below'][0])) {
+      if ($item['below']) {
         $item['attributes']->addClass('menuparent');
-      } else {
-        $items['below'] = $this->_build_sub_tree($item['below']);
+        $item['below'] = $this->_build_sub_tree($item['below']);
       }
     }
     return $items;
@@ -134,7 +132,6 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
     $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['nice_menus_type'];
 
     // add 'menuparent' class.
-    // TODO: no work.
     $tree['#items'] = $this->_build_sub_tree($tree['#items']);
 
     return array(
