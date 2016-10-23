@@ -7,6 +7,7 @@
 
 (function ($) {
 
+  'use strict';
   /**
    * Add Superfish to all Nice Menus with some basic options.
    */
