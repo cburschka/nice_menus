@@ -141,9 +141,15 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
 
     return array(
       '#theme'       => 'nice_menus',
-      '#attached'    => [
+      '#attached'    => array(
         'library' => $library,
-      ],
+        'drupalSettings' => array(
+          'nice_menus_options' => array(
+            'delay' => $config->get('nice_menus_sf_delay'),
+            'speed'=> $config->get('nice_menus_sf_speed')
+          )
+        )
+      ),
       '#menu_output' => drupal_render($tree),
     );
   }

@@ -21,9 +21,9 @@
           // Disable drop shadows.
           dropShadows: false,
           // Mouse delay.
-          //delay: Drupal.settings.nice_menus_options.delay,
+          delay: drupalSettings.nice_menus_options.delay,
           // Animation speed.
-          //speed: Drupal.settings.nice_menus_options.speed
+          speed: drupalSettings.nice_menus_options.speed
         });
 
         // Add in Brandon Aaron’s bgIframe plugin for IE select issues.
