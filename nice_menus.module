@@ -67,6 +67,8 @@ function nice_menus_build_tree(array $config) {
     $parameters->setMaxDepth($config['nice_menus_depth']);
   }
 
+  // TODO support nice_menus_respect_expand.
+
   $parameters->excludeRoot()->onlyEnabledLinks();
 
   $tree = $menu_tree->load($config['menu_name'], $parameters);

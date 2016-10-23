@@ -83,26 +83,40 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
     ]);
   }
 
-  public function _build_sub_tree($items) {
+  /**
+   * // add 'menuparent' class.
+   *
+   * @param $items
+   *
+   * @return mixed
+   */
+  public function _build_sub_menu_menuparent($items) {
     foreach ($items as $k => &$item) {
-      /**
-       * attributes methods.
-       * [1] => offsetGet
-       * [2] => offsetSet
-       * [3] => offsetUnset
-       * [4] => offsetExists
-       * [5] => addClass
-       * [6] => setAttribute
-       * [7] => removeAttribute
-       * [8] => removeClass
-       * [9] => hasClass
-       */
       if ($item['below']) {
         $item['attributes']->addClass('menuparent');
-        $item['below'] = $this->_build_sub_tree($item['below']);
+        $item['below'] = $this->_build_sub_menu_menuparent($item['below']);
       }
     }
     return $items;
+  }
+
+  /**
+   * add class to nice menus.
+   *
+   * @param $tree
+   * @param $block_config
+   *
+   * @return mixed
+   */
+  public function _build_menu_style($tree, $block_config) {
+    // add default class.
+    $tree['#attributes']['class'][] = 'nice-menu';
+    $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['menu_name'];
+    $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['nice_menus_type'];
+
+    // add 'menuparent' class.
+    $tree['#items'] = $this->_build_sub_menu_menuparent($tree['#items']);
+    return $tree;
   }
 
   /**
@@ -128,15 +142,11 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
       $library[] = 'nice_menus/nice_menus_default';
     }
 
+    // get menu tree.
     $tree = nice_menus_build_tree($block_config);
 
-    // add default class.
-    $tree['#attributes']['class'][] = 'nice-menu';
-    $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['menu_name'];
-    $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['nice_menus_type'];
-
-    // add 'menuparent' class.
-    $tree['#items'] = $this->_build_sub_tree($tree['#items']);
+    // build menu class.
+    $tree = $this->_build_menu_style($tree, $block_config);
 
     return array(
       '#theme'       => 'nice_menus',
