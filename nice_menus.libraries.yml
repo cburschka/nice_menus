@@ -1,19 +1,19 @@
 jquery.bgiframe:
-  version: 3.0.0
+  version: 3.0.1
   js:
     libraries/js/jquery.bgiframe.js: {}
   dependencies:
     - core/jquery
 
 jquery.hoverIntent:
-  version: r7
+  version: 1.8.0
   js:
     libraries/js/jquery.hoverIntent.js: {}
   dependencies:
     - core/jquery
 
 superfish:
-  version: 1.7.4
+  version: 1.7.9
   js:
     libraries/js/superfish.js: {}
   dependencies:
