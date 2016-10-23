@@ -120,7 +120,6 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
     if ($config->get('nice_menus_js')) {
       $library[] = 'nice_menus/superfish';
       $library[] = 'nice_menus/jquery.hoverIntent';
-      $library[] = 'nice_menus/jquery.bgiframe';
       $library[] = 'nice_menus/nice_menus';
     }
 
