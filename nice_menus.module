@@ -75,8 +75,34 @@ function nice_menus_build_tree(array $config) {
   $manipulators = array(
     array('callable' => 'menu.default_tree_manipulators:checkAccess'),
     array('callable' => 'menu.default_tree_manipulators:generateIndexAndSort'),
-    array('callable' => 'toolbar_tools_menu_navigation_links'),
+    array('callable' => 'menu_navigation_links'),
   );
   $tree = $menu_tree->transform($tree, $manipulators);
   return $menu_tree->build($tree);
+}
+
+/**
+ * Adds toolbar-specific attributes to the menu link tree.
+ *
+ * @param \Drupal\Core\Menu\MenuLinkTreeElement[] $tree
+ *   The menu link tree to manipulate.
+ *
+ * @return \Drupal\Core\Menu\MenuLinkTreeElement[]
+ *   The manipulated menu link tree.
+ */
+function menu_navigation_links(array $tree) {
+  foreach ($tree as $element) {
+    if ($element->subtree) {
+      menu_navigation_links($element->subtree);
+    }
+    $link = $element->link;
+
+    // Get the non-localized title to make the icon class.
+    $definition = $link->getPluginDefinition();
+
+    $element->options['attributes']['class'][] = 'toolbar-icon';
+    $element->options['attributes']['class'][] = 'toolbar-icon-' . strtolower(str_replace(array('.', ' ', '_'), array('-', '-', '-'), $definition['id']));
+    $element->options['attributes']['title'] = $link->getDescription();
+  }
+  return $tree;
 }
