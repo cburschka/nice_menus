@@ -13,18 +13,15 @@ use Drupal\Core\Menu\MenuTreeParameters;
 /**
  * Implements hook_help().
  */
-function nice_menus_help($path, $arg) {
-  $output = '';
-  switch ($path) {
-    case 'admin/config/modules#description':
+function nice_menus_help($route_name) {
+  switch ($route_name) {
+    case 'help.page.nice_menus':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
       $output .= t('Make drop down/flyout CSS menus for site and admin menus.');
-      break;
-
-    case 'admin/config/user-interface/nice_menus':
-      $output .= t('<p>This is a simple module that enables the site to have drop down/flyout CSS menus for site and admin navigation.</p><p>Remember to activate and configure the menu blocks in !link</p>', array('!link' => l(t('admin/structure/block'), 'admin/structure/block')));
-      break;
+      $output .= t('<p>This is a simple module that enables the site to have drop down/flyout CSS menus for site and admin navigation.</p><p>Remember to activate and configure the menu blocks in <a href=":block_layout">Block layout</a></p>', array(':block_layout' => '/admin/structure/block'));
+      return $output;
   }
-  return $output;
 }
 
 /**
