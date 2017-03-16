@@ -7,20 +7,18 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Block\BlockPluginInterface;
 
 /**
- * Provides a Nice menus block.
+ * Provides a 'Nice menus' block.
  *
  * @Block(
  *   id = "nice_menus_block",
  *   admin_label = @Translation("Nice menus"),
+ *   category = @Translation("Menus")
  * )
  */
-class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
+class NiceMenusBlock extends BlockBase implements BlockInterface {
 
   /**
-   * @param array                                $form
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *
-   * @return array
+   * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
     $form = parent::blockForm($form, $form_state);
@@ -48,7 +46,7 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
     $form['nice_menus_type'] = array(
       '#type'          => 'select',
       '#title'         => $this->t('Menu style'),
-      '#description'   => $this->t('right: menu items are listed on top of each other and expand to the right') . '<br />' . t('left: menu items are listed on top of each other and expand to the left') . '<br />' . t('down: menu items are listed side by side and expand down'),
+      '#description'   => $this->t('right: menu items are listed on top of each other and expand to the right') . '<br />' . $this->t('left: menu items are listed on top of each other and expand to the left') . '<br />' . $this->t('down: menu items are listed side by side and expand down'),
       '#default_value' => isset($config['nice_menus_type']) ? $config['nice_menus_type'] : 'right',
       '#options'       => array_combine(array(
         'right',
@@ -113,6 +111,7 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
     $tree['#attributes']['class'][] = 'nice-menu';
     $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['menu_name'];
     $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['nice_menus_type'];
+    $tree['#attributes']['class'][] = 'clearfix menu';
 
     // add 'menuparent' class.
     $tree['#items'] = $this->_build_sub_menu_menuparent($tree['#items']);
@@ -152,6 +151,10 @@ class NiceMenusBlock extends BlockBase implements BlockPluginInterface {
     // build menu class.
     $tree = $this->_build_menu_style($tree, $block_config);
 
+    /**
+     * @TODO suupoert responsive.
+     * @TODO display title.
+     */
     return array(
       '#theme'       => 'nice_menus',
       '#attached'    => array(
