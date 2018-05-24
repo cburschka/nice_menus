@@ -51,8 +51,12 @@ function nice_menus_theme($existing, $type, $theme, $path) {
  * @return mixed
  */
 function nice_menus_build_tree(array $config) {
-  $menu_tree = \Drupal::service('toolbar.menu_tree');
+  $menu_tree = \Drupal::service('menu.link_tree');
   $parameters = new MenuTreeParameters();
+
+  // Set the active trail.
+  $active_trail = \Drupal::service('menu.active_trail')->getActiveTrailIds($config['menu_name']);
+  $parameters->setActiveTrail($active_trail);
 
   // set menu root.
   if ($config['menu_mlid']) {
@@ -63,10 +67,6 @@ function nice_menus_build_tree(array $config) {
   if ($config['nice_menus_depth'] > 0) {
     $parameters->setMaxDepth($config['nice_menus_depth']);
   }
-
-  // Set the active trail.
-//  $active_trail = \Drupal::service('menu.active_trail')->getActiveTrailIds($config['menu_name']);
-//  $parameters->setActiveTrail($active_trail);
 
   // TODO support nice_menus_respect_expand.
   $parameters->excludeRoot()->onlyEnabledLinks();
