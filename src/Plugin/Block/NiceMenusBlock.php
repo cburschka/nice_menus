@@ -22,9 +22,7 @@ class NiceMenusBlock extends BlockBase {
    */
   public function defaultConfiguration() {
     return [
-      'nice_menus_menu' => 'admin:',
-      'menu_name'       => 'admin',
-      'menu_mlid'       => ''
+      'nice_menus_menu' => 'admin:'
     ];
   }
 
@@ -133,7 +131,7 @@ class NiceMenusBlock extends BlockBase {
    * @return array
    */
   public function build() {
-    $block_config = $this->getConfiguration();
+    $block_config = $this->getBlockConfigExtended();
 
     $config = \Drupal::config('nice_menus.settings');
 
@@ -206,5 +204,17 @@ class NiceMenusBlock extends BlockBase {
     $block_config = $this->getConfiguration();
     $menu_name = $block_config['menu_name'];
     return Cache::mergeContexts(parent::getCacheContexts(), ['route.menu_active_trails:' . $menu_name]);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getBlockConfigExtended() {
+    // get config.
+    $block_config = $this->getConfiguration();
+
+    // set default menu_name and menu_mlid.
+    list($block_config['menu_name'], $block_config['menu_mlid']) = explode(':', $block_config['nice_menus_menu']);
+    return $block_config;
   }
 }
