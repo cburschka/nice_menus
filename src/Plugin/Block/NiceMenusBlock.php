@@ -2,6 +2,7 @@
 
 namespace Drupal\nice_menus\Plugin\Block;
 
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
 
@@ -15,6 +16,17 @@ use Drupal\Core\Form\FormStateInterface;
  * )
  */
 class NiceMenusBlock extends BlockBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultConfiguration() {
+    return [
+      'nice_menus_menu' => 'admin:',
+      'menu_name'       => 'admin',
+      'menu_mlid'       => ''
+    ];
+  }
 
   /**
    * {@inheritdoc}
@@ -122,8 +134,6 @@ class NiceMenusBlock extends BlockBase {
    */
   public function build() {
     $block_config = $this->getConfiguration();
-    $nice_menus_menu = isset($block_config['nice_menus_menu']) ? $block_config['nice_menus_menu'] : 'admin:';
-    list($block_config['menu_name'], $block_config['menu_mlid']) = explode(':', $nice_menus_menu);
 
     $config = \Drupal::config('nice_menus.settings');
 
@@ -165,7 +175,36 @@ class NiceMenusBlock extends BlockBase {
           )
         )
       ),
-      '#menu_output' => drupal_render($tree),
+      '#menu_output' => $tree,
     );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTags() {
+    // Even when the menu block renders to the empty string for a user, we want
+    // the cache tag for this menu to be set: whenever the menu is changed, this
+    // menu block must also be re-rendered for that user, because maybe a menu
+    // link that is accessible for that user has been added.
+    $cache_tags = parent::getCacheTags();
+    $block_config = $this->getConfiguration();
+    $cache_tags[] = 'config:system.menu.' . $block_config['menu_name'];
+    return $cache_tags;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheContexts() {
+    // ::build() uses MenuActiveTrail::getActiveTrailIds()
+    // to extend menu tree parameters, and those take the active menu trail
+    // into account. Therefore, we must vary the rendered menu by the active
+    // trail of the rendered menu.
+    // Additional cache contexts, e.g. those that determine link text or
+    // accessibility of a menu, will be bubbled automatically.
+    $block_config = $this->getConfiguration();
+    $menu_name = $block_config['menu_name'];
+    return Cache::mergeContexts(parent::getCacheContexts(), ['route.menu_active_trails:' . $menu_name]);
   }
 }

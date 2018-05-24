@@ -64,8 +64,11 @@ function nice_menus_build_tree(array $config) {
     $parameters->setMaxDepth($config['nice_menus_depth']);
   }
 
-  // TODO support nice_menus_respect_expand.
+  // Set the active trail.
+  $active_trail = \Drupal::service('menu.active_trail')->getActiveTrailIds($config['menu_name']);
+  $parameters->setActiveTrail($active_trail);
 
+  // TODO support nice_menus_respect_expand.
   $parameters->excludeRoot()->onlyEnabledLinks();
 
   $tree = $menu_tree->load($config['menu_name'], $parameters);
