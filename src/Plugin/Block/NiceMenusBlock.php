@@ -120,7 +120,7 @@ class NiceMenusBlock extends BlockBase {
     $tree['#attributes']['class'][] = 'nice-menu';
     $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['menu_name'];
     $tree['#attributes']['class'][] = 'nice-menu-' . $block_config['nice_menus_type'];
-    $tree['#attributes']['class'][] = 'clearfix menu';
+    $tree['#attributes']['class'][] = 'menu';
 
     // add 'menuparent' class.
     $tree['#items'] = $this->_build_sub_menu_menuparent($tree['#items']);
@@ -186,7 +186,7 @@ class NiceMenusBlock extends BlockBase {
     // menu block must also be re-rendered for that user, because maybe a menu
     // link that is accessible for that user has been added.
     $cache_tags = parent::getCacheTags();
-    $block_config = $this->getConfiguration();
+    $block_config = $this->getBlockConfigExtended();
     $cache_tags[] = 'config:system.menu.' . $block_config['menu_name'];
     return $cache_tags;
   }
@@ -201,7 +201,7 @@ class NiceMenusBlock extends BlockBase {
     // trail of the rendered menu.
     // Additional cache contexts, e.g. those that determine link text or
     // accessibility of a menu, will be bubbled automatically.
-    $block_config = $this->getConfiguration();
+    $block_config = $this->getBlockConfigExtended();
     $menu_name = $block_config['menu_name'];
     return Cache::mergeContexts(parent::getCacheContexts(), ['route.menu_active_trails:' . $menu_name]);
   }

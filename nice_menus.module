@@ -65,8 +65,8 @@ function nice_menus_build_tree(array $config) {
   }
 
   // Set the active trail.
-  $active_trail = \Drupal::service('menu.active_trail')->getActiveTrailIds($config['menu_name']);
-  $parameters->setActiveTrail($active_trail);
+//  $active_trail = \Drupal::service('menu.active_trail')->getActiveTrailIds($config['menu_name']);
+//  $parameters->setActiveTrail($active_trail);
 
   // TODO support nice_menus_respect_expand.
   $parameters->excludeRoot()->onlyEnabledLinks();
@@ -74,35 +74,8 @@ function nice_menus_build_tree(array $config) {
   $tree = $menu_tree->load($config['menu_name'], $parameters);
   $manipulators = array(
     array('callable' => 'menu.default_tree_manipulators:checkAccess'),
-    array('callable' => 'menu.default_tree_manipulators:generateIndexAndSort'),
-    array('callable' => 'menu_navigation_links'),
+    array('callable' => 'menu.default_tree_manipulators:generateIndexAndSort')
   );
   $tree = $menu_tree->transform($tree, $manipulators);
   return $menu_tree->build($tree);
-}
-
-/**
- * Adds toolbar-specific attributes to the menu link tree.
- *
- * @param \Drupal\Core\Menu\MenuLinkTreeElement[] $tree
- *   The menu link tree to manipulate.
- *
- * @return \Drupal\Core\Menu\MenuLinkTreeElement[]
- *   The manipulated menu link tree.
- */
-function menu_navigation_links(array $tree) {
-  foreach ($tree as $element) {
-    if ($element->subtree) {
-      menu_navigation_links($element->subtree);
-    }
-    $link = $element->link;
-
-    // Get the non-localized title to make the icon class.
-    $definition = $link->getPluginDefinition();
-
-    $element->options['attributes']['class'][] = 'toolbar-icon';
-    $element->options['attributes']['class'][] = 'toolbar-icon-' . strtolower(str_replace(array('.', ' ', '_'), array('-', '-', '-'), $definition['id']));
-    $element->options['attributes']['title'] = $link->getDescription();
-  }
-  return $tree;
 }
