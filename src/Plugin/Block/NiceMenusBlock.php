@@ -4,7 +4,6 @@ namespace Drupal\nice_menus\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Block\BlockPluginInterface;
 
 /**
  * Provides a 'Nice menus' block.
@@ -15,7 +14,7 @@ use Drupal\Core\Block\BlockPluginInterface;
  *   category = @Translation("Menus")
  * )
  */
-class NiceMenusBlock extends BlockBase implements BlockInterface {
+class NiceMenusBlock extends BlockBase {
 
   /**
    * {@inheritdoc}
