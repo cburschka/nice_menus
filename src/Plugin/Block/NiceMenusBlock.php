@@ -117,6 +117,8 @@ class NiceMenusBlock extends BlockBase implements ContainerFactoryPluginInterfac
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     $this->setConfiguration([
+      'label'                     => $form_state->getValue('label'),
+      'label_display'             => $form_state->getValue('label_display'),
       'nice_menus_name'           => $form_state->getValue('nice_menus_name'),
       'nice_menus_menu'           => $form_state->getValue('nice_menus_menu'),
       'nice_menus_depth'          => $form_state->getValue('nice_menus_depth'),
@@ -249,7 +251,7 @@ class NiceMenusBlock extends BlockBase implements ContainerFactoryPluginInterfac
     $block_config = $this->getConfiguration();
 
     // set default menu_name and menu_mlid.
-    list($block_config['menu_name'], $block_config['menu_mlid']) = explode(':', $block_config['nice_menus_menu']);
+    list($block_config['menu_name'], $block_config['menu_mlid']) = explode(':', $block_config['nice_menus_menu'], 2);
     return $block_config;
   }
 }
