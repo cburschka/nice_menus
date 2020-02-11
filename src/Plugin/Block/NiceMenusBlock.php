@@ -160,7 +160,9 @@ class NiceMenusBlock extends BlockBase implements ContainerFactoryPluginInterfac
     $tree['#attributes']['class'][] = 'menu';
 
     // add 'menuparent' class.
-    $tree['#items'] = $this->_build_sub_menu_menuparent($tree['#items']);
+    if (!empty($tree['#items'])) {
+      $tree['#items'] = $this->_build_sub_menu_menuparent($tree['#items']);
+    }
     return $tree;
   }
 
