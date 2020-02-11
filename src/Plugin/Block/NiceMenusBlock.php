@@ -5,6 +5,8 @@ namespace Drupal\nice_menus\Plugin\Block;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 
 /**
  * Provides a 'Nice menus' block.
@@ -15,7 +17,40 @@ use Drupal\Core\Form\FormStateInterface;
  *   category = @Translation("Menus")
  * )
  */
-class NiceMenusBlock extends BlockBase {
+class NiceMenusBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The path alias manager.
+   *
+   * @var \Drupal\Core\Path\AliasManagerInterface
+   */
+  protected $menuSelector;
+
+  /**
+   * NiceMenusBlock constructor.
+   *
+   * @param array  $configuration
+   * @param string $plugin_id
+   * @param mixed  $plugin_definition
+   * @param        $menuSelector
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, $menuSelector) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->menuSelector = $menuSelector;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('menu.parent_form_selector')
+    );
+  }
+
 
   /**
    * {@inheritdoc}
@@ -31,6 +66,7 @@ class NiceMenusBlock extends BlockBase {
    */
   public function blockForm($form, FormStateInterface $form_state) {
     $form = parent::blockForm($form, $form_state);
+
     $config = $this->getConfiguration();
     $form['nice_menus_name'] = array(
       '#type'          => 'textfield',
@@ -42,8 +78,7 @@ class NiceMenusBlock extends BlockBase {
       '#title'         => $this->t('Menu parent'),
       '#description'   => $this->t('The menu parent from which to show a Nice menu.'),
       '#default_value' => isset($config['nice_menus_menu']) ? $config['nice_menus_menu'] : 'navigation:0',
-      '#options'       => \Drupal::service('menu.parent_form_selector')
-        ->getParentSelectOptions(),
+      '#options'       => $this->menuSelector->getParentSelectOptions(),
     );
     $form['nice_menus_depth'] = array(
       '#type'          => 'select',
