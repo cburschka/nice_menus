@@ -22,7 +22,7 @@ class NiceMenusBlock extends BlockBase implements ContainerFactoryPluginInterfac
   /**
    * The path alias manager.
    *
-   * @var \Drupal\Core\Path\AliasManagerInterface
+   * @var \Drupal\Core\Menu\MenuParentFormSelectorInterface
    */
   protected $menuSelector;
 
